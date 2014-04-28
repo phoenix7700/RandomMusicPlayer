@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/button_picksong_margin"
+    android:paddingLeft="@dimen/button_picksong_margin"
+    android:paddingRight="@dimen/button_picksong_margin"
+    android:paddingTop="@dimen/button_picksong_margin"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/buttonRewind"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/button_rewind" />
+
+        <Button
+            android:id="@+id/buttonStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_Stop" />
+
+        <Button
+            android:id="@+id/buttonPlayPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_play" />
+
+        <Button
+            android:id="@+id/buttonFastForward"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="@string/button_fastforward" />
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/seekBar1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout1" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/seekBar1"
+        android:baselineAligned="false" >
+
+        <ExpandableListView
+            android:id="@+id/expandableListViewSongList"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".5" >
+        </ExpandableListView>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".5" >
+
+            <EditText
+                android:id="@+id/editTextSongName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/buttonSelectSong"
+                android:hint="@string/edittext_hint" />
+
+            <ExpandableListView
+                android:id="@+id/expandableListViewSongOrder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/editTextSongName" >
+            </ExpandableListView>
+
+            <Button
+                android:id="@+id/buttonSelectSong"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:paddingBottom="@dimen/button_picksong_margin"
+                android:paddingLeft="@dimen/button_picksong_margin"
+                android:paddingRight="@dimen/button_picksong_margin"
+                android:paddingTop="@dimen/button_picksong_margin"
+                android:text="@string/button_select_song" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -3,7 +3,6 @@ package com.matthew.ahsam.phoenix.randommusicplayer;
 import java.io.File;
 import java.io.FilenameFilter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -11,21 +10,32 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity {
 	
-	private Button buttonSelectSong;
-
+	//Resources
+	private Button mButtonSelectSong;
+	private EditText mEditTextSongName;
+	
+	//Variables
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		buttonSelectSong = (Button)findViewById(R.id.buttonSelectSong);
-		buttonSelectSong.setOnClickListener(new View.OnClickListener() {
+		mEditTextSongName = (EditText)findViewById(R.id.editTextSongName);
+		
+		
+		
+		mButtonSelectSong = (Button)findViewById(R.id.buttonSelectSong);
+		mButtonSelectSong.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -51,24 +61,26 @@ public class MainActivity extends Activity {
 	
 	private File[] loadFileList(String directory) {
 	    File path = new File(directory);
-
+	    
 	    if(path.exists()) {
 	        FilenameFilter filter = new FilenameFilter() {
 	            public boolean accept(File dir, String filename) {
 	                //add some filters here, for now return true to see all files
 	                File file = new File(dir, filename);
+	                //Log.e("FILEFILTER", ">" + filename);
 	                return filename.contains(".mp3") || file.isDirectory();
 	                //return true;
 	            }
 	        };
 
 	        //if null return an empty array instead
-	        File[] list = path.listFiles(filter); 
+	        File[] list = path.listFiles(filter);
 	        return list == null? new File[0] : list;
 	    } else {
 	        return new File[0];
 	    }
 	}
+	
 
 	public void showFileListDialog(final String directory, final Context context){
 	    Dialog dialog = null;
@@ -106,7 +118,8 @@ public class MainActivity extends Activity {
 	    builder.setItems(filenameList, new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) {
 	            File chosenFile = fileList[which];
-
+	            mEditTextSongName.setText(chosenFile.getAbsolutePath());
+	            
 	            if(chosenFile.isDirectory())
 	                showFileListDialog(chosenFile.getAbsolutePath(), context);
 	        }
@@ -132,4 +145,13 @@ public class MainActivity extends Activity {
 
 	    return stringBuilder.toString();
 	}
+
+	public EditText getmEditTextSongName() {
+		return mEditTextSongName;
+	}
+
+	public void setmEditTextSongName(EditText mEditTextSongName) {
+		this.mEditTextSongName = mEditTextSongName;
+	}
+	
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:gravity="center" >
+
+    <Button
+        android:id="@+id/buttonRewind"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_rewind" />
+
+    <Button
+        android:id="@+id/buttonStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_Stop" />
+
+    <Button
+        android:id="@+id/buttonPlayPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_play" />
+
+	<Button
+        android:id="@+id/buttonFastForward"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text="@string/button_fastforward" />
+</LinearLayout>
+

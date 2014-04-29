@@ -7,7 +7,7 @@
     <string name="button_Stop">Stop</string>
     <string name="button_rewind">&lt;&lt;</string>
     <string name="button_fastforward">&gt;&gt;</string>
-    <string name="button_select_song">...</string>
+    <string name="button_select_song">&#8230;</string>
     <string name="edittext_hint">Pick song</string>
 
 </resources>

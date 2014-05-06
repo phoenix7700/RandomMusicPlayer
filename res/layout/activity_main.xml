@@ -8,18 +8,12 @@
     android:paddingTop="@dimen/button_picksong_margin"
     tools:context=".MainActivity" >
 
-    <SeekBar
-        android:id="@+id/seekBar1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/fragmentAudioPlayer" />
-
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/seekBar1"
+        android:layout_below="@+id/fragmentAudioPlayer"
         android:baselineAligned="false" >
 
         <ExpandableListView

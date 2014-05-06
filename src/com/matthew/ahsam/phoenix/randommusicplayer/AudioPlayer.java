@@ -10,18 +10,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.SeekBar;
 
 public class AudioPlayer extends Fragment{
 	private MediaPlayer mPlayer = new MediaPlayer();
 	private Button mButtonPlayPause;
 	private Button mButtonStop;
+	private SeekBar mSeekBar;
 	
 	//private boolean mIsPlaying;
 	
 	@Override
 	public View onCreateView (LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.music_player,parent,false);
+		
+		mSeekBar = (SeekBar)v.findViewById(R.id.seekBar1);
 		
 		
 		mButtonPlayPause = (Button)v.findViewById(R.id.buttonPlayPause);

@@ -2,6 +2,7 @@ package com.matthew.ahsam.phoenix.randommusicplayer;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,28 +12,33 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 
 public class MainActivity extends FragmentActivity {
 	
 	//Resources
 	private Button mButtonSelectSong;
 	private EditText mEditTextSongName;
+	private ExpandableListView mExpandableListViewSongList;
 	
 	//Variables
-	
+	private SongListAdapter mSongAdapter;
+	private ArrayList<SongListGroup> mSongList;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		mExpandableListViewSongList = (ExpandableListView) findViewById(R.id.expandableListViewSongList);
+		mSongList = SetStandardGroups();
+		mSongAdapter = new SongListAdapter (MainActivity.this, mSongList);
+		mExpandableListViewSongList.setAdapter(mSongAdapter);
+		
 		mEditTextSongName = (EditText)findViewById(R.id.editTextSongName);
-		
-		
 		
 		mButtonSelectSong = (Button)findViewById(R.id.buttonSelectSong);
 		mButtonSelectSong.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +52,74 @@ public class MainActivity extends FragmentActivity {
 		
 		
 	}
+	
+	 public ArrayList<SongListGroup> SetStandardGroups() {
+		 
+		         ArrayList<SongListGroup> list = new ArrayList<SongListGroup>();
+		 
+		         ArrayList<SongListChild> list2 = new ArrayList<SongListChild>();
+		 
+		         SongListGroup gru1 = new SongListGroup();
+		 
+		         gru1.setName("Comedy");
+		 
+		         SongListChild ch1_1 = new SongListChild();
+		 
+		         ch1_1.setName("A movie");
+
+		         list2.add(ch1_1);
+		 
+		         SongListChild ch1_2 = new SongListChild();
+		 
+		         ch1_2.setName("An other movie");
+
+		         list2.add(ch1_2);
+		 
+		         SongListChild ch1_3 = new SongListChild();
+		 
+		         ch1_3.setName("And an other movie");
+
+		         list2.add(ch1_3);
+		 
+		         gru1.setSongs(list2);
+		 
+		         list2 = new ArrayList<SongListChild>();
+		 
+		          
+		 
+		         SongListGroup gru2 = new SongListGroup();
+		 
+		         gru2.setName("Action");
+		 
+		         SongListChild ch2_1 = new SongListChild();
+		 
+		         ch2_1.setName("A movie");
+
+		         list2.add(ch2_1);
+		 
+		         SongListChild ch2_2 = new SongListChild();
+		 
+		         ch2_2.setName("An other movie");
+		 		         list2.add(ch2_2);
+		 
+		         SongListChild ch2_3 = new SongListChild();
+		 
+		         ch2_3.setName("And an other movie");
+
+		         list2.add(ch2_3);
+		 
+		         gru2.setSongs(list2);
+		 
+		         list.add(gru1);
+		 
+		         list.add(gru2);
+		 
+		          
+		 
+		         return list;
+		 
+		     }
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

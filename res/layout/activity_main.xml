@@ -37,14 +37,6 @@
                 android:layout_toLeftOf="@+id/buttonSelectSong"
                 android:hint="@string/edittext_hint" />
 
-            <ExpandableListView
-                android:id="@+id/expandableListViewSongOrder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/editTextSongName" >
-            </ExpandableListView>
-
             <Button
                 android:id="@+id/buttonSelectSong"
                 android:layout_width="35dp"
@@ -56,6 +48,14 @@
                 android:paddingRight="@dimen/button_picksong_margin"
                 android:paddingTop="@dimen/button_picksong_margin"
                 android:text="@string/button_select_song" />
+
+            <ListView
+                android:id="@+id/listViewAddSongs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/buttonSelectSong" >
+            </ListView>
 
         </RelativeLayout>
     </LinearLayout>

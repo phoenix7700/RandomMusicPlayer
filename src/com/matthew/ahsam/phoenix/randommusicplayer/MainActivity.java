@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
+import android.widget.ListView;
 
 public class MainActivity extends FragmentActivity {
 	
@@ -24,10 +25,17 @@ public class MainActivity extends FragmentActivity {
 	private Button mButtonSelectSong;
 	private EditText mEditTextSongName;
 	private ExpandableListView mExpandableListViewSongList;
+	private ListView mListViewAddSongs;
+	
 	
 	//Variables
+	private File[] fileList;
+	private String[] filenameList;
 	private SongListAdapter mSongAdapter;
+	private InputListAdapter mInputAdapter;
 	private ArrayList<SongListGroup> mSongList;
+	private ArrayList<SongListChild> mInputList;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -37,6 +45,11 @@ public class MainActivity extends FragmentActivity {
 		mSongList = SetStandardGroups();
 		mSongAdapter = new SongListAdapter (MainActivity.this, mSongList);
 		mExpandableListViewSongList.setAdapter(mSongAdapter);
+			
+		mListViewAddSongs = (ListView) findViewById(R.id.listViewAddSongs);
+		mInputList = populateSongList();
+		mInputAdapter = new InputListAdapter (MainActivity.this, mInputList);
+		mListViewAddSongs.setAdapter(mInputAdapter);
 		
 		mEditTextSongName = (EditText)findViewById(R.id.editTextSongName);
 		
@@ -51,6 +64,23 @@ public class MainActivity extends FragmentActivity {
 		});
 		
 		
+	}
+	
+	private ArrayList<SongListChild> populateSongList () {
+		ArrayList<SongListChild> list = new ArrayList<SongListChild>();
+		File[] tempFileList = loadFileList(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC);
+	
+		
+		fileList = new File[tempFileList.length];
+		
+		 for(int i = 0; i < tempFileList.length; i++){
+	            fileList[i] = tempFileList[i];   
+	        	SongListChild slc = new SongListChild();
+	            slc.setName(tempFileList[i].getName());
+	            list.add(slc);
+	        }
+
+		 return list;
 	}
 	
 	 public ArrayList<SongListGroup> SetStandardGroups() {
@@ -130,8 +160,7 @@ public class MainActivity extends FragmentActivity {
 
 	
 	
-	private File[] fileList;
-	private String[] filenameList;
+	
 	
 	private File[] loadFileList(String directory) {
 	    File path = new File(directory);
@@ -203,6 +232,7 @@ public class MainActivity extends FragmentActivity {
 
 	        @Override
 	        public void onClick(DialogInterface dialog, int which) {
+	        	mEditTextSongName.setText("");
 	            dialog.dismiss();
 	        }
 	    });
@@ -227,5 +257,7 @@ public class MainActivity extends FragmentActivity {
 	public void setmEditTextSongName(EditText mEditTextSongName) {
 		this.mEditTextSongName = mEditTextSongName;
 	}
-	
+	public void addSongToList () {
+		
+	}
 }

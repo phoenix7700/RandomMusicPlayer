@@ -35,7 +35,7 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 		public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View view, ViewGroup parent) {
 			SongListChild child = (SongListChild) getChild(groupPosition,childPosition);
 			if(view == null) {
-				LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+				LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				view = infalInflater.inflate(R.layout.songlist_child, null);
 			}
 			TextView tv = (TextView) view.findViewById(R.id.tvChild);
@@ -63,7 +63,7 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 		public View getGroupView (int groupPosition, boolean isLastChild, View view, ViewGroup parent) {
 			SongListGroup group = (SongListGroup) getGroup(groupPosition);
 			if (view == null) {
-				LayoutInflater inf = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+				LayoutInflater inf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				view = inf.inflate(R.layout.songlist_group, null);
 			}
 			TextView tv = (TextView) view.findViewById(R.id.tvGroup);

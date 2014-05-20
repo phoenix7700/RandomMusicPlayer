@@ -33,10 +33,10 @@ public final class R {
         public static final int buttonStop=0x7f080008;
         public static final int editTextSongName=0x7f080003;
         public static final int expandableListViewSongList=0x7f080002;
-        public static final int expandableListViewSongOrder=0x7f080005;
         public static final int fragmentAudioPlayer=0x7f080001;
         public static final int linearLayout1=0x7f080006;
         public static final int linearLayout2=0x7f080000;
+        public static final int listViewAddSongs=0x7f080005;
         public static final int seekBar1=0x7f08000b;
         public static final int tvChild=0x7f08000c;
         public static final int tvGroup=0x7f08000d;

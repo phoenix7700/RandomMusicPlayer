@@ -25,21 +25,20 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f08000e;
-        public static final int buttonFastForward=0x7f08000a;
-        public static final int buttonPlayPause=0x7f080009;
-        public static final int buttonRewind=0x7f080007;
-        public static final int buttonSelectSong=0x7f080004;
-        public static final int buttonStop=0x7f080008;
-        public static final int editTextSongName=0x7f080003;
+        public static final int action_settings=0x7f08000d;
+        public static final int buttonAddSection=0x7f080003;
+        public static final int buttonFastForward=0x7f080009;
+        public static final int buttonPlayPause=0x7f080008;
+        public static final int buttonRewind=0x7f080006;
+        public static final int buttonStop=0x7f080007;
         public static final int expandableListViewSongList=0x7f080002;
         public static final int fragmentAudioPlayer=0x7f080001;
-        public static final int linearLayout1=0x7f080006;
+        public static final int linearLayout1=0x7f080005;
         public static final int linearLayout2=0x7f080000;
-        public static final int listViewAddSongs=0x7f080005;
-        public static final int seekBar1=0x7f08000b;
-        public static final int tvChild=0x7f08000c;
-        public static final int tvGroup=0x7f08000d;
+        public static final int listViewAddSongs=0x7f080004;
+        public static final int seekBar1=0x7f08000a;
+        public static final int tvChild=0x7f08000b;
+        public static final int tvGroup=0x7f08000c;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -54,6 +53,7 @@ public final class R {
         public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
         public static final int button_Stop=0x7f050003;
+        public static final int button_add_section=0x7f050008;
         public static final int button_fastforward=0x7f050005;
         public static final int button_play=0x7f050002;
         public static final int button_rewind=0x7f050004;

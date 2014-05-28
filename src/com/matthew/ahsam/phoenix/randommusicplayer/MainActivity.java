@@ -22,7 +22,7 @@ import android.widget.ListView;
 public class MainActivity extends FragmentActivity {
 	
 	//Resources
-	private Button mButtonSelectSong;
+	private Button mButtonAddSection;
 	private EditText mEditTextSongName;
 	private ExpandableListView mExpandableListViewSongList;
 	private ListView mListViewAddSongs;
@@ -47,108 +47,84 @@ public class MainActivity extends FragmentActivity {
 		mExpandableListViewSongList.setAdapter(mSongAdapter);
 			
 		mListViewAddSongs = (ListView) findViewById(R.id.listViewAddSongs);
-		mInputList = populateSongList();
+		mInputList = populateInputList();
 		mInputAdapter = new InputListAdapter (MainActivity.this, mInputList);
 		mListViewAddSongs.setAdapter(mInputAdapter);
 		
-		mEditTextSongName = (EditText)findViewById(R.id.editTextSongName);
-		
-		mButtonSelectSong = (Button)findViewById(R.id.buttonSelectSong);
-		mButtonSelectSong.setOnClickListener(new View.OnClickListener() {
+		mButtonAddSection = (Button) findViewById(R.id.buttonAddSection);
+		mButtonAddSection.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				showFileListDialog(Environment.getExternalStorageDirectory().toString(), MainActivity.this);
-				
+				SongListGroup g = new SongListGroup();
+				g.setName("Ordered");
+				mSongList.add(g);
+				mSongAdapter = null;
+				mSongAdapter = new SongListAdapter(MainActivity.this, mSongList);
+				mExpandableListViewSongList.setAdapter(mSongAdapter);
+				mSongAdapter.notifyDataSetChanged();
 			}
 		});
-		
-		
 	}
 	
-	private ArrayList<SongListChild> populateSongList () {
+	private ArrayList<SongListChild> populateInputList () {
 		ArrayList<SongListChild> list = new ArrayList<SongListChild>();
-		File[] tempFileList = loadFileList(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC);
-	
+		File[] tempFolderList = loadFileList(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC, true);
+		File[] tempFileList = loadFileList(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC, false);
+		FileSort fsort = new FileSort (tempFolderList);
+		tempFolderList = fsort.Sort();
+		fsort.setFullArray(tempFileList);
+		tempFileList = fsort.Sort();
+		fileList = new File[tempFileList.length + tempFolderList.length];
+		int folderlen = tempFolderList.length;
+		for(int i = 0; i < folderlen; i++){
+            fileList[i] = tempFolderList[i];   
+        	SongListChild slc = new SongListChild();
+            slc.setName(tempFolderList[i].getName());
+            list.add(slc);
+        }
 		
-		fileList = new File[tempFileList.length];
-		
-		 for(int i = 0; i < tempFileList.length; i++){
-	            fileList[i] = tempFileList[i];   
-	        	SongListChild slc = new SongListChild();
-	            slc.setName(tempFileList[i].getName());
-	            list.add(slc);
-	        }
+		for(int i = 0 ; i < tempFileList.length; i++){
+	        fileList[i + folderlen] = tempFileList[i];   
+	        SongListChild slc = new SongListChild();
+	        slc.setName(tempFileList[i].getName());
+	        list.add(slc);
+	    }
 
-		 return list;
+		return list;
 	}
 	
-	 public ArrayList<SongListGroup> SetStandardGroups() {
+	private File[] sortByName (File[] files) {
+		FileSort fSort = new FileSort (files);
+		return fSort.Sort();
+	}
+	
+	public ArrayList<SongListGroup> SetStandardGroups() {
 		 
-		         ArrayList<SongListGroup> list = new ArrayList<SongListGroup>();
+		ArrayList<SongListGroup> list = new ArrayList<SongListGroup>();
+	    ArrayList<SongListChild> list2 = new ArrayList<SongListChild>();
+	 
+	    SongListGroup gru1 = new SongListGroup();
+	    gru1.setName("Random");
+	 
+	    SongListChild ch1_1 = new SongListChild();
+	    ch1_1.setName("A Song");
+	    list2.add(ch1_1);
+	 
+	    SongListChild ch1_2 = new SongListChild(); 
+        ch1_2.setName("Song");
+	    list2.add(ch1_2);
 		 
-		         ArrayList<SongListChild> list2 = new ArrayList<SongListChild>();
+	    SongListChild ch1_3 = new SongListChild();
+		ch1_3.setName("Other song");
+		list2.add(ch1_3);
 		 
-		         SongListGroup gru1 = new SongListGroup();
+		gru1.setSongs(list2);	 
+		
+	    list.add(gru1);
 		 
-		         gru1.setName("Comedy");
-		 
-		         SongListChild ch1_1 = new SongListChild();
-		 
-		         ch1_1.setName("A movie");
-
-		         list2.add(ch1_1);
-		 
-		         SongListChild ch1_2 = new SongListChild();
-		 
-		         ch1_2.setName("An other movie");
-
-		         list2.add(ch1_2);
-		 
-		         SongListChild ch1_3 = new SongListChild();
-		 
-		         ch1_3.setName("And an other movie");
-
-		         list2.add(ch1_3);
-		 
-		         gru1.setSongs(list2);
-		 
-		         list2 = new ArrayList<SongListChild>();
-		 
-		          
-		 
-		         SongListGroup gru2 = new SongListGroup();
-		 
-		         gru2.setName("Action");
-		 
-		         SongListChild ch2_1 = new SongListChild();
-		 
-		         ch2_1.setName("A movie");
-
-		         list2.add(ch2_1);
-		 
-		         SongListChild ch2_2 = new SongListChild();
-		 
-		         ch2_2.setName("An other movie");
-		 		         list2.add(ch2_2);
-		 
-		         SongListChild ch2_3 = new SongListChild();
-		 
-		         ch2_3.setName("And an other movie");
-
-		         list2.add(ch2_3);
-		 
-		         gru2.setSongs(list2);
-		 
-		         list.add(gru1);
-		 
-		         list.add(gru2);
-		 
-		          
-		 
-		         return list;
-		 
-		     }
+	         return list;
+	 }
 
 
 	@Override
@@ -162,19 +138,28 @@ public class MainActivity extends FragmentActivity {
 	
 	
 	
-	private File[] loadFileList(String directory) {
+	private File[] loadFileList(String directory, boolean onlyDirectories) {
 	    File path = new File(directory);
 	    
 	    if(path.exists()) {
-	        FilenameFilter filter = new FilenameFilter() {
-	            public boolean accept(File dir, String filename) {
-	                //add some filters here, for now return true to see all files
-	                File file = new File(dir, filename);
-	                //Log.e("FILEFILTER", ">" + filename);
-	                return filename.contains(".mp3") || file.isDirectory();
-	                //return true;
-	            }
-	        };
+	    	FilenameFilter filter;
+	    	if (onlyDirectories) {
+		        filter = new FilenameFilter() {
+		            public boolean accept(File dir, String filename) {
+		                File file = new File(dir, filename);
+		                //Log.e("FILEFILTER", ">" + filename);
+		                return file.isDirectory();
+		            }	
+		        };
+	    	} else {
+	    		filter = new FilenameFilter() {
+		            public boolean accept(File dir, String filename) {
+		                File file = new File(dir, filename);
+		                //Log.e("FILEFILTER", ">" + filename);
+		                return filename.contains(".mp3");
+		            }	
+		        };
+	    	}
 
 	        //if null return an empty array instead
 	        File[] list = path.listFiles(filter);
@@ -185,7 +170,7 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 
-	public void showFileListDialog(final String directory, final Context context){
+/*	public void showFileListDialog(final String directory, final Context context){
 	    Dialog dialog = null;
 	    AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -238,7 +223,7 @@ public class MainActivity extends FragmentActivity {
 	    });
 	        dialog = builder.create();
 	    dialog.show();
-	}
+	}*/
 
 	public String upOneDirectory(String directory){
 	String[] dirs = directory.split("/");

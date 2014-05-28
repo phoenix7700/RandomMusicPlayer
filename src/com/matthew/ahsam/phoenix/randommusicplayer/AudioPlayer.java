@@ -32,9 +32,9 @@ public class AudioPlayer extends Fragment{
 			
 			@Override
 			public void onClick(View v) {
-				String name = ((MainActivity)getActivity()).getmEditTextSongName().getText().toString();
-				Log.e("songname",name);
-				playSong(getActivity(), name);
+				//String name = ((MainActivity)getActivity()).getmEditTextSongName().getText().toString();
+				//Log.e("songname",name);
+				//playSong(getActivity(), name);
 			}
 		});
 		

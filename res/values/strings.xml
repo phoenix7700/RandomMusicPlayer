@@ -9,5 +9,6 @@
     <string name="button_fastforward">&gt;&gt;</string>
     <string name="button_select_song">&#8230;</string>
     <string name="edittext_hint">Pick song</string>
+    <string name="button_add_section">Add Section</string>
 
 </resources>

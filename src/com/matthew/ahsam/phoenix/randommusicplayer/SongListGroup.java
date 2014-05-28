@@ -2,8 +2,10 @@ package com.matthew.ahsam.phoenix.randommusicplayer;
 
 import java.util.ArrayList;
 
-public class SongListGroup {
-	private String mName;
+public class SongListGroup extends SongListChild {
+	
+	private enum SongType { RANDOM, ORDERED }
+	private SongType mType;
 	private ArrayList<SongListChild> Songs;
 
 	public ArrayList<SongListChild> getSongs() {
@@ -14,12 +16,20 @@ public class SongListGroup {
 		Songs = songs;
 	}
 
-	public String getName() {
-		return mName;
+	public SongType getType() {
+		return mType;
 	}
 
-	public void setName(String name) {
-		mName = name;
+	public void setType(SongType type) {
+		mType = type;
+	}
+	
+	public boolean hasChildren() {
+		if (Songs == null) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }
 

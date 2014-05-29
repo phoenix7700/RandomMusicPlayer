@@ -4,16 +4,12 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -30,7 +26,6 @@ public class MainActivity extends FragmentActivity {
 	
 	//Variables
 	private File[] fileList;
-	private String[] filenameList;
 	private SongListAdapter mSongAdapter;
 	private InputListAdapter mInputAdapter;
 	private ArrayList<SongListGroup> mSongList;
@@ -47,9 +42,23 @@ public class MainActivity extends FragmentActivity {
 		mExpandableListViewSongList.setAdapter(mSongAdapter);
 			
 		mListViewAddSongs = (ListView) findViewById(R.id.listViewAddSongs);
-		mInputList = populateInputList();
+		mInputList = populateInputList(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC);
 		mInputAdapter = new InputListAdapter (MainActivity.this, mInputList);
 		mListViewAddSongs.setAdapter(mInputAdapter);
+		mListViewAddSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,	long id) {
+				SongListChild slc = mInputList.get(position);
+				if (slc.isDirectory()) {
+					mInputList.clear();
+					mInputList.addAll(populateInputList(slc.getFullPath()));
+					mInputAdapter.notifyDataSetChanged();
+				}
+				
+			}
+		
+		});
 		
 		mButtonAddSection = (Button) findViewById(R.id.buttonAddSection);
 		mButtonAddSection.setOnClickListener(new View.OnClickListener() {
@@ -59,28 +68,39 @@ public class MainActivity extends FragmentActivity {
 				SongListGroup g = new SongListGroup();
 				g.setName("Ordered");
 				mSongList.add(g);
-				mSongAdapter = null;
-				mSongAdapter = new SongListAdapter(MainActivity.this, mSongList);
-				mExpandableListViewSongList.setAdapter(mSongAdapter);
 				mSongAdapter.notifyDataSetChanged();
 			}
 		});
 	}
-	
-	private ArrayList<SongListChild> populateInputList () {
+
+	private ArrayList<SongListChild> populateInputList (String directory) {
 		ArrayList<SongListChild> list = new ArrayList<SongListChild>();
-		File[] tempFolderList = loadFileList(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC, true);
-		File[] tempFileList = loadFileList(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC, false);
-		FileSort fsort = new FileSort (tempFolderList);
-		tempFolderList = fsort.Sort();
-		fsort.setFullArray(tempFileList);
-		tempFileList = fsort.Sort();
+		File[] tempFolderList = loadFileList(directory, true);
+		File[] tempFileList = loadFileList(directory, false);
+		
+		tempFolderList = sortByName(tempFolderList);
+		tempFileList = sortByName(tempFileList);
+		
+		if (!directory.equals(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC)) {
+			File[] temp = new File[tempFolderList.length + 1];
+			temp[0] = new File(upOneDirectory(directory));
+			System.arraycopy(tempFolderList, 0, temp, 1, tempFolderList.length);
+			tempFolderList = new File[temp.length];
+			System.arraycopy(temp, 0, tempFolderList, 0, temp.length);
+		}
+		
 		fileList = new File[tempFileList.length + tempFolderList.length];
 		int folderlen = tempFolderList.length;
 		for(int i = 0; i < folderlen; i++){
+			
             fileList[i] = tempFolderList[i];   
         	SongListChild slc = new SongListChild();
             slc.setName(tempFolderList[i].getName());
+            slc.setFullPath(tempFolderList[i].getAbsolutePath());
+            slc.setDirectory(true);
+            if (i == 0 && tempFolderList[i].getAbsolutePath().equals(upOneDirectory(directory))) {
+				slc.setName("..");
+			}
             list.add(slc);
         }
 		
@@ -88,6 +108,8 @@ public class MainActivity extends FragmentActivity {
 	        fileList[i + folderlen] = tempFileList[i];   
 	        SongListChild slc = new SongListChild();
 	        slc.setName(tempFileList[i].getName());
+	        slc.setFullPath(tempFileList[i].getAbsolutePath());
+	        slc.setDirectory(false);
 	        list.add(slc);
 	    }
 
@@ -154,7 +176,7 @@ public class MainActivity extends FragmentActivity {
 	    	} else {
 	    		filter = new FilenameFilter() {
 		            public boolean accept(File dir, String filename) {
-		                File file = new File(dir, filename);
+		                //File file = new File(dir, filename);
 		                //Log.e("FILEFILTER", ">" + filename);
 		                return filename.contains(".mp3");
 		            }	
@@ -229,8 +251,10 @@ public class MainActivity extends FragmentActivity {
 	String[] dirs = directory.split("/");
 	    StringBuilder stringBuilder = new StringBuilder("");
 
-	    for(int i = 0; i < dirs.length-1; i++)
+	    for(int i = 0; i < dirs.length-2; i++)
 	        stringBuilder.append(dirs[i]).append("/");
+	    
+	    	stringBuilder.append(dirs[dirs.length-2]);
 
 	    return stringBuilder.toString();
 	}

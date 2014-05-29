@@ -42,6 +42,9 @@ public abstract class Quicksort <T> {
 	
 	
 	private T [] SortPriv (int arraySize, T [] sortArray ) {
+		if (sortArray.length < 1) {
+			return fullArray;
+		}
 		//LeftSelector
 		int leftCurrIndex = 0;
 	    //RightSelector
@@ -156,7 +159,7 @@ public abstract class Quicksort <T> {
 	                
 	            }
 	        }
-	        DisplayArray();
+	        //DisplayArray();
 	        //system("PAUSE");
 	        if (arraySize > 2) {
 	            int countSize = 0;

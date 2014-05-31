@@ -4,6 +4,15 @@ public class SongListChild {
 	private String mName;
 	private String mFullPath;
 	private boolean mDirectory;
+	private boolean mSelected;
+
+	public boolean isSelected() {
+		return mSelected;
+	}
+
+	public void setSelected(boolean selected) {
+		mSelected = selected;
+	}
 
 	public String getFullPath() {
 		return mFullPath;

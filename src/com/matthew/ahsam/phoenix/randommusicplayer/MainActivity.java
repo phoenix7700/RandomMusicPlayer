@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
@@ -30,6 +32,8 @@ public class MainActivity extends FragmentActivity {
 	private InputListAdapter mInputAdapter;
 	private ArrayList<SongListGroup> mSongList;
 	private ArrayList<SongListChild> mInputList;
+	private Integer	mPreviousSelected;
+	private View	mPreviousView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,11 +58,25 @@ public class MainActivity extends FragmentActivity {
 					mInputList.clear();
 					mInputList.addAll(populateInputList(slc.getFullPath()));
 					mInputAdapter.notifyDataSetChanged();
+					mPreviousSelected = null;
+				} else {
+					if (mPreviousSelected != null) {
+						mInputList.get(mPreviousSelected).setSelected(false);
+						mPreviousView.setBackgroundColor(0xFFEFEFEF);
+						mPreviousView.invalidate();
+					}
+					mInputList.get(position).setSelected(true);
+					mPreviousSelected = position;
+					mPreviousView = view;
+					view.setBackgroundColor(0xFF98E3FF);
+					//view.getBackground().setColorFilter(Color.parseColor("#FF98E3FF"), PorterDuff.Mode.DARKEN);
+					view.invalidate();
 				}
 				
 			}
 		
 		});
+		
 		
 		mButtonAddSection = (Button) findViewById(R.id.buttonAddSection);
 		mButtonAddSection.setOnClickListener(new View.OnClickListener() {

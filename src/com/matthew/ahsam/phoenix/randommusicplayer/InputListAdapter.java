@@ -3,6 +3,7 @@ package com.matthew.ahsam.phoenix.randommusicplayer;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,13 @@ public class InputListAdapter extends BaseAdapter {
 			LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = infalInflater.inflate(R.layout.songlist_child, null);
 		}
+		if (!child.isSelected()) {
+			view.setBackgroundColor(0xFFEFEFEF);
+		} else {
+			view.setBackgroundColor(0xFF98E3FF);
+		}
+		ColorDrawable d = (ColorDrawable) view.getBackground();
+		int color = d.getColor();
 		TextView tv = (TextView) view.findViewById(R.id.tvChild);
 		tv.setText(child.getName().toString());
 		return view;

@@ -4,16 +4,15 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.content.ClipData;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.DragShadowBuilder;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 
@@ -21,7 +20,6 @@ public class MainActivity extends FragmentActivity {
 	
 	//Resources
 	private Button mButtonAddSection;
-	private EditText mEditTextSongName;
 	private ExpandableListView mExpandableListViewSongList;
 	private ListView mListViewAddSongs;
 	
@@ -62,20 +60,36 @@ public class MainActivity extends FragmentActivity {
 				} else {
 					if (mPreviousSelected != null) {
 						mInputList.get(mPreviousSelected).setSelected(false);
-						mPreviousView.setBackgroundColor(0xFFEFEFEF);
+						mPreviousView.setBackgroundColor(view.getResources().getColor(android.R.color.background_light));
 						mPreviousView.invalidate();
 					}
 					mInputList.get(position).setSelected(true);
 					mPreviousSelected = position;
 					mPreviousView = view;
-					view.setBackgroundColor(0xFF98E3FF);
-					//view.getBackground().setColorFilter(Color.parseColor("#FF98E3FF"), PorterDuff.Mode.DARKEN);
+					view.setBackgroundColor(view.getResources().getColor(R.color.BlueTintBackground));
 					view.invalidate();
 				}
 				
 			}
 		
 		});
+		
+		mListViewAddSongs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+				if (mInputList.get(position).isDirectory()){
+					return true;
+				} else {
+					ClipData data = ClipData.newPlainText("", "");
+					DragShadowBuilder shadow = new View.DragShadowBuilder(view);
+					view.startDrag(data, shadow, mInputList.get(position), 0);
+				}
+				return true;
+			}
+		
+		});
+		
 		
 		
 		mButtonAddSection = (Button) findViewById(R.id.buttonAddSection);
@@ -84,11 +98,18 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				SongListGroup g = new SongListGroup();
+				ArrayList<SongListChild> arrayslc = new ArrayList<SongListChild>();
 				g.setName("Ordered");
 				mSongList.add(g);
+				mSongList.get(mSongList.size()-1).setSongs(arrayslc);
 				mSongAdapter.notifyDataSetChanged();
 			}
 		});
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
 	}
 
 	private ArrayList<SongListChild> populateInputList (String directory) {
@@ -147,17 +168,17 @@ public class MainActivity extends FragmentActivity {
 	    SongListGroup gru1 = new SongListGroup();
 	    gru1.setName("Random");
 	 
-	    SongListChild ch1_1 = new SongListChild();
-	    ch1_1.setName("A Song");
-	    list2.add(ch1_1);
+	    SongListChild slc1 = new SongListChild();
+	    slc1.setName("A Song");
+	    list2.add(slc1);
 	 
-	    SongListChild ch1_2 = new SongListChild(); 
-        ch1_2.setName("Song");
-	    list2.add(ch1_2);
+	    SongListChild slc2 = new SongListChild(); 
+        slc2.setName("Song");
+	    list2.add(slc2);
 		 
-	    SongListChild ch1_3 = new SongListChild();
-		ch1_3.setName("Other song");
-		list2.add(ch1_3);
+	    SongListChild slc3 = new SongListChild();
+		slc3.setName("Other song");
+		list2.add(slc3);
 		 
 		gru1.setSongs(list2);	 
 		
@@ -276,15 +297,13 @@ public class MainActivity extends FragmentActivity {
 
 	    return stringBuilder.toString();
 	}
-
-	public EditText getmEditTextSongName() {
-		return mEditTextSongName;
+	
+	public ExpandableListView getExpandableListViewSongList() {
+		return mExpandableListViewSongList;
 	}
 
-	public void setmEditTextSongName(EditText mEditTextSongName) {
-		this.mEditTextSongName = mEditTextSongName;
+	public void setExpandableListViewSongList(ExpandableListView expandableListViewSongList) {
+		mExpandableListViewSongList = expandableListViewSongList;
 	}
-	public void addSongToList () {
-		
-	}
+
 }

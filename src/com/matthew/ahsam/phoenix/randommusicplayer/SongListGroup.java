@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class SongListGroup extends SongListChild {
 	
-	private enum SongType { RANDOM, ORDERED }
-	private SongType mType;
+	private enum SectionType { RANDOM, ORDERED }
+	private SectionType mType;
 	private ArrayList<SongListChild> Songs;
 
 	public ArrayList<SongListChild> getSongs() {
@@ -16,11 +16,11 @@ public class SongListGroup extends SongListChild {
 		Songs = songs;
 	}
 
-	public SongType getType() {
+	public SectionType getType() {
 		return mType;
 	}
 
-	public void setType(SongType type) {
+	public void setType(SectionType type) {
 		mType = type;
 	}
 	

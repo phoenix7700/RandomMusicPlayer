@@ -2,8 +2,9 @@ package com.matthew.ahsam.phoenix.randommusicplayer;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,18 +15,11 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 
 		private Context context;
 		private ArrayList<SongListGroup> groups;
+		private int mTempPosition;
 		
 		public SongListAdapter (Context c, ArrayList<SongListGroup> g) {
 			context = c;
 			groups = g;
-		}
-		
-		public void addGroup (SongListGroup group) {
-			groups.add(group);
-		}
-		
-		public void addItem (SongListChild item, SongListGroup group) {
-			
 		}
 		
 		public Object getChild (int groupPosition, int childPosition) {
@@ -49,13 +43,9 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 		}
 		
 		public int getChildrenCount (int groupPosition) {
-			try {
+			if (groups.get(groupPosition).getSongs() != null ) {
 					ArrayList<SongListChild> chList = groups.get(groupPosition).getSongs();
 					return chList.size();
-			}
-			catch (Exception e) {
-				e.printStackTrace();
-				//Log.e("ChildCount",);
 			}
 			return 0;
 		}
@@ -66,6 +56,14 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 		
 		public int getGroupCount() {
 			return groups.size();
+		}
+		
+		public int getGroupPosition (SongListGroup slg) {
+			for (int i=0; i < getGroupCount(); i++) {
+				if (slg.equals(getGroup(i)))
+					return i;
+			}
+			return -1;
 		}
 		
 		public long getGroupId (int groupPosition) {
@@ -80,6 +78,54 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 			}
 			TextView tv = (TextView) view.findViewById(R.id.tvGroup);
 			tv.setText (group.getName());
+			if (view != null) {
+				view.setOnDragListener(new View.OnDragListener() {
+					
+					@Override
+					public boolean onDrag(View v, DragEvent event) {
+						switch (event.getAction()) {
+						case DragEvent.ACTION_DRAG_STARTED:
+							break;
+						case DragEvent.ACTION_DRAG_ENTERED:
+							v.setSelected(true);
+							v.setBackgroundColor(v.getResources().getColor(R.color.BlueTintBackground));
+							break;
+						case DragEvent.ACTION_DRAG_LOCATION:
+							break;
+						case DragEvent.ACTION_DRAG_EXITED:
+							v.setBackgroundColor(v.getResources().getColor(android.R.color.background_light));
+							break;
+						case DragEvent.ACTION_DROP:
+							ViewGroup view = (ViewGroup) ((Activity)context).getWindow().getDecorView().findViewById(R.id.expandableListViewSongList);
+							ViewGroup vgChild;
+							int i=0,j=0;
+							while(i < groups.size()){
+								vgChild = (ViewGroup) view.getChildAt(j);
+								View vChild = vgChild.getChildAt(0);
+								if (vChild.getId() == R.id.tvGroup) {
+									if (view.getChildAt(j).getTop() == v.getTop()) {
+										mTempPosition = i;
+										break;
+									}
+									i++;
+								}
+								j++;
+							}
+							v.setBackgroundColor(v.getResources().getColor(android.R.color.background_light));
+							SongListChild slc = (SongListChild) event.getLocalState();
+							groups.get(mTempPosition).getSongs().add(slc);
+							notifyDataSetChanged();
+							break;
+						case DragEvent.ACTION_DRAG_ENDED:
+							break;
+							
+						default:
+							break;
+						}
+						return true;
+					}
+				});
+			}
 			return view;
 		}
 		
@@ -92,5 +138,7 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 			// TODO Auto-generated method stub
 			return true;
 		}
+			
+		
 
 }

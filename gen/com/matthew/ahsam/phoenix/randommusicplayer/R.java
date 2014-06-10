@@ -58,6 +58,7 @@ public final class R {
         public static final int button_Stop=0x7f060003;
         public static final int button_add_section=0x7f060008;
         public static final int button_fastforward=0x7f060005;
+        public static final int button_pause=0x7f060009;
         public static final int button_play=0x7f060002;
         public static final int button_rewind=0x7f060004;
         public static final int button_select_song=0x7f060006;

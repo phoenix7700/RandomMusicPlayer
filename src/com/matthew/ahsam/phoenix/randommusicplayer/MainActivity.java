@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -31,20 +32,35 @@ public class MainActivity extends FragmentActivity {
 	private ArrayList<SongListGroup> mSongList;
 	private ArrayList<SongListChild> mInputList;
 	private Integer	mPreviousSelected;
-	private View	mPreviousView;
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		if (savedInstanceState != null) {
+			mPreviousSelected = savedInstanceState.getInt("PreviousSelected");
+		} else {
+			mPreviousSelected = -1;
+
+		}
+		
 		mExpandableListViewSongList = (ExpandableListView) findViewById(R.id.expandableListViewSongList);
-		mSongList = SetStandardGroups();
+		if (savedInstanceState != null) {
+			mSongList = savedInstanceState.getParcelableArrayList("SongList");
+		} else {
+			mSongList = SetStandardGroups();
+		}
 		mSongAdapter = new SongListAdapter (MainActivity.this, mSongList);
 		mExpandableListViewSongList.setAdapter(mSongAdapter);
 			
 		mListViewAddSongs = (ListView) findViewById(R.id.listViewAddSongs);
-		mInputList = populateInputList(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC);
+		if (savedInstanceState != null) {
+			mInputList = savedInstanceState.getParcelableArrayList("InputList");
+		} else {
+			mInputList = populateInputList(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC);
+		}
 		mInputAdapter = new InputListAdapter (MainActivity.this, mInputList);
 		mListViewAddSongs.setAdapter(mInputAdapter);
 		mListViewAddSongs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -56,16 +72,17 @@ public class MainActivity extends FragmentActivity {
 					mInputList.clear();
 					mInputList.addAll(populateInputList(slc.getFullPath()));
 					mInputAdapter.notifyDataSetChanged();
-					mPreviousSelected = null;
+					mPreviousSelected = -1;
 				} else {
-					if (mPreviousSelected != null) {
+					if (mPreviousSelected >= 0) {
 						mInputList.get(mPreviousSelected).setSelected(false);
+						ViewGroup vg = (ViewGroup) view.getParent();
+						View mPreviousView = vg.getChildAt(Math.abs(((SongListChild)vg.getChildAt(0).getTag()).getPosition() - mPreviousSelected));
 						mPreviousView.setBackgroundColor(view.getResources().getColor(android.R.color.background_light));
 						mPreviousView.invalidate();
 					}
 					mInputList.get(position).setSelected(true);
 					mPreviousSelected = position;
-					mPreviousView = view;
 					view.setBackgroundColor(view.getResources().getColor(R.color.BlueTintBackground));
 					view.invalidate();
 				}
@@ -100,11 +117,32 @@ public class MainActivity extends FragmentActivity {
 				SongListGroup g = new SongListGroup();
 				ArrayList<SongListChild> arrayslc = new ArrayList<SongListChild>();
 				g.setName("Ordered");
+				g.setPosition(mSongList.size());
 				mSongList.add(g);
 				mSongList.get(mSongList.size()-1).setSongs(arrayslc);
 				mSongAdapter.notifyDataSetChanged();
 			}
 		});
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		if (savedInstanceState != null){
+		savedInstanceState.putInt("PreviousSelected", mPreviousSelected);
+		savedInstanceState.putParcelableArrayList("SongList", mSongList);
+		savedInstanceState.putParcelableArrayList("InputList", mInputList);
+		} else {
+			
+		}
+		super.onSaveInstanceState(savedInstanceState);
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		mPreviousSelected = savedInstanceState.getInt("PreviousSelected");
+		mSongList = savedInstanceState.getParcelableArrayList("SongList");
+		mInputList = savedInstanceState.getParcelableArrayList("InputList");
 	}
 	
 	@Override
@@ -167,19 +205,7 @@ public class MainActivity extends FragmentActivity {
 	 
 	    SongListGroup gru1 = new SongListGroup();
 	    gru1.setName("Random");
-	 
-	    SongListChild slc1 = new SongListChild();
-	    slc1.setName("A Song");
-	    list2.add(slc1);
-	 
-	    SongListChild slc2 = new SongListChild(); 
-        slc2.setName("Song");
-	    list2.add(slc2);
-		 
-	    SongListChild slc3 = new SongListChild();
-		slc3.setName("Other song");
-		list2.add(slc3);
-		 
+	    gru1.setPosition(0);	 
 		gru1.setSongs(list2);	 
 		
 	    list.add(gru1);
@@ -305,5 +331,11 @@ public class MainActivity extends FragmentActivity {
 	public void setExpandableListViewSongList(ExpandableListView expandableListViewSongList) {
 		mExpandableListViewSongList = expandableListViewSongList;
 	}
+	
+	public SongListAdapter getSongAdapter() {
+		return mSongAdapter;
+	}
+
+
 
 }

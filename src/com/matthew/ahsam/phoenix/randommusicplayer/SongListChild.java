@@ -1,10 +1,22 @@
 package com.matthew.ahsam.phoenix.randommusicplayer;
 
-public class SongListChild {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class SongListChild implements Parcelable{
 	private String mName;
 	private String mFullPath;
 	private boolean mDirectory;
 	private boolean mSelected;
+	private	int mPosition;
+	
+	SongListChild () {
+		mName = "Unknown";
+		mFullPath = null;
+		mDirectory = false;
+		mSelected = false;
+		mPosition = 0;
+	}
 
 	public boolean isSelected() {
 		return mSelected;
@@ -36,5 +48,44 @@ public class SongListChild {
 
 	public void setDirectory(boolean directory) {
 		mDirectory = directory;
+	}
+
+	public int getPosition() {
+		return mPosition;
+	}
+
+	public void setPosition(int position) {
+		mPosition = position;
+	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(mName);
+		dest.writeString(mFullPath);
+		boolean [] boolarray = new boolean [2];
+		boolarray [0] = mDirectory;
+		boolarray [1] = mSelected;
+		dest.writeBooleanArray(boolarray);
+		dest.writeInt(mPosition);
+	}
+	
+	public static final Parcelable.Creator<SongListChild> CREATOR = new Parcelable.Creator<SongListChild>() {
+		public SongListChild createFromParcel(Parcel in) {
+		    return new SongListChild(in);
+		}
+	
+	public SongListChild[] newArray(int size) {
+	    return new SongListChild[size];
+		}
+	};
+	
+	private SongListChild (Parcel in) {
+		
 	}
 }

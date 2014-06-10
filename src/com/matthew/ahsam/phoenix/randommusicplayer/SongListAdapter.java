@@ -2,7 +2,6 @@ package com.matthew.ahsam.phoenix.randommusicplayer;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 
 		private Context context;
 		private ArrayList<SongListGroup> groups;
-		private int mTempPosition;
 		
 		public SongListAdapter (Context c, ArrayList<SongListGroup> g) {
 			context = c;
@@ -25,6 +23,10 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 		public Object getChild (int groupPosition, int childPosition) {
 			ArrayList<SongListChild> childList = groups.get(groupPosition).getSongs();
 			return childList.get(childPosition);
+		}
+		
+		public String getNextSongPath (int groupPosition, int childPosition) {
+			return ((SongListChild)getChild(groupPosition,childPosition)).getFullPath();
 		}
 		
 		public long getChildId (int groupPosition, int childPosition) {
@@ -78,6 +80,7 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 			}
 			TextView tv = (TextView) view.findViewById(R.id.tvGroup);
 			tv.setText (group.getName());
+			view.setTag(groups.get(groupPosition));
 			if (view != null) {
 				view.setOnDragListener(new View.OnDragListener() {
 					
@@ -96,24 +99,10 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 							v.setBackgroundColor(v.getResources().getColor(android.R.color.background_light));
 							break;
 						case DragEvent.ACTION_DROP:
-							ViewGroup view = (ViewGroup) ((Activity)context).getWindow().getDecorView().findViewById(R.id.expandableListViewSongList);
-							ViewGroup vgChild;
-							int i=0,j=0;
-							while(i < groups.size()){
-								vgChild = (ViewGroup) view.getChildAt(j);
-								View vChild = vgChild.getChildAt(0);
-								if (vChild.getId() == R.id.tvGroup) {
-									if (view.getChildAt(j).getTop() == v.getTop()) {
-										mTempPosition = i;
-										break;
-									}
-									i++;
-								}
-								j++;
-							}
+							SongListGroup slg = (SongListGroup) v.getTag();
 							v.setBackgroundColor(v.getResources().getColor(android.R.color.background_light));
 							SongListChild slc = (SongListChild) event.getLocalState();
-							groups.get(mTempPosition).getSongs().add(slc);
+							groups.get(slg.getPosition()).getSongs().add(slc);
 							notifyDataSetChanged();
 							break;
 						case DragEvent.ACTION_DRAG_ENDED:

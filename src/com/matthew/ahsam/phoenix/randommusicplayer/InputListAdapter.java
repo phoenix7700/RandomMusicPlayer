@@ -44,8 +44,10 @@ public class InputListAdapter extends BaseAdapter {
 		if (!child.isSelected()) {
 			view.setBackgroundColor(view.getResources().getColor(android.R.color.background_light));
 		} else {
-			view.setBackgroundColor(0xFF98E3FF);
+			view.setBackgroundColor(view.getResources().getColor(R.color.BlueTintBackground));
 		}
+		child.setPosition(position);
+		view.setTag(child);
 		TextView tv = (TextView) view.findViewById(R.id.tvChild);
 		tv.setText(child.getName().toString());
 		return view;

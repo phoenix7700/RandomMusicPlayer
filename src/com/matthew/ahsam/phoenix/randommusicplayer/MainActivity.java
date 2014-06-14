@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import android.content.ClipData;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
@@ -43,7 +44,6 @@ public class MainActivity extends FragmentActivity {
 			mPreviousSelected = savedInstanceState.getInt("PreviousSelected");
 		} else {
 			mPreviousSelected = -1;
-
 		}
 		
 		mExpandableListViewSongList = (ExpandableListView) findViewById(R.id.expandableListViewSongList);
@@ -140,9 +140,14 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		mPreviousSelected = savedInstanceState.getInt("PreviousSelected");
+		/*mPreviousSelected = savedInstanceState.getInt("PreviousSelected");
 		mSongList = savedInstanceState.getParcelableArrayList("SongList");
-		mInputList = savedInstanceState.getParcelableArrayList("InputList");
+		mInputList = savedInstanceState.getParcelableArrayList("InputList");*/
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
 	}
 	
 	@Override

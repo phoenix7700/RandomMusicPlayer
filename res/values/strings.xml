@@ -11,5 +11,16 @@
     <string name="edittext_hint">Pick song</string>
     <string name="button_add_section">Add Section</string>
     <string name="button_pause">Pause</string>
+    <string name="button_remove">Remove Selected</string>
+    <string name="text_by"> By </string>
+    <string name="text_unknown">Unknown</string>
+    <string name="text_section_type">Section Type</string>
+    <string name="dialog_type_picker_title">Pick a type…</string>
+    <string-array name="SectionTypes">
+        <item >Random</item>
+        <item >Ordered</item>
+    </string-array>
+    <string name="button_move_up_song">Up</string>
+    <string name="button_move_down_song">Down</string>
 
 </resources>

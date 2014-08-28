@@ -12,6 +12,7 @@ import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
@@ -212,7 +213,10 @@ public class MainActivity extends FragmentActivity {
 		if (savedInstanceState != null) {
 			mInputList = savedInstanceState.getParcelableArrayList("InputList");
 		} else {
-			mInputList = populateInputList(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC);
+			File f = new File (Environment.DIRECTORY_MUSIC);
+			Log.e ("TESTING",f.getAbsolutePath());
+			Log.e("Testing2", Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC);
+			mInputList = populateInputList(Environment.getExternalStorageDirectory().getPath() + "/" + Environment.DIRECTORY_MUSIC);
 		}
 		mInputAdapter = new InputListAdapter (MainActivity.this, mInputList);
 		mListViewAddSongs.setAdapter(mInputAdapter);
@@ -399,7 +403,7 @@ public class MainActivity extends FragmentActivity {
 		tempFolderList = sortByName(tempFolderList);
 		tempFileList = sortByName(tempFileList);
 		
-		if (!directory.equals(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC)) {
+		if (!directory.equals(Environment.getExternalStorageDirectory().getPath() + "/" + Environment.DIRECTORY_MUSIC)) {
 			File[] temp = new File[tempFolderList.length + 1];
 			temp[0] = new File(upOneDirectory(directory));
 			System.arraycopy(tempFolderList, 0, temp, 1, tempFolderList.length);
@@ -453,14 +457,19 @@ public class MainActivity extends FragmentActivity {
 	
 	private File[] loadFileList(String directory, boolean onlyDirectories) {
 	    File path = new File(directory);
-	    
+	    Log.e("PATH",path.getAbsolutePath());
+	    if(path.isDirectory()){
+	    	Log.e("Dir","true");
+	    } else {
+	    	Log.e("dir","false");
+	    }
 	    if(path.exists()) {
 	    	FilenameFilter filter;
 	    	if (onlyDirectories) {
 		        filter = new FilenameFilter() {
 		            public boolean accept(File dir, String filename) {
 		                File file = new File(dir, filename);
-		                //Log.e("FILEFILTER", ">" + filename);
+		                Log.e("FILEFILTER", ">" + filename);
 		                return file.isDirectory();
 		            }	
 		        };
@@ -468,14 +477,15 @@ public class MainActivity extends FragmentActivity {
 	    		filter = new FilenameFilter() {
 		            public boolean accept(File dir, String filename) {
 		                //File file = new File(dir, filename);
-		                //Log.e("FILEFILTER", ">" + filename);
+		                Log.e("FILEFILTER", ">" + filename);
 		                return filename.contains(".mp3");
 		            }	
 		        };
 	    	}
 
 	        //if null return an empty array instead
-	        File[] list = path.listFiles(filter);
+	    	File [] list = path.listFiles();
+	         list = path.listFiles(filter);
 	        return list == null? new File[0] : list;
 	    } else {
 	        return new File[0];

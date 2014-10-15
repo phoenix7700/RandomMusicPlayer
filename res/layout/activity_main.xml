@@ -3,10 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_light"
-    android:paddingBottom="@dimen/button_picksong_margin"
-    android:paddingLeft="@dimen/button_picksong_margin"
-    android:paddingRight="@dimen/button_picksong_margin"
-    android:paddingTop="@dimen/button_picksong_margin"
     tools:context=".MainActivity" >
 
     <LinearLayout
@@ -29,22 +25,77 @@
             android:layout_height="match_parent"
             android:layout_weight=".5" >
 
-            <Button
-                android:id="@+id/buttonAddSection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:text="@string/button_add_section" />
-
-            <ListView
-                android:id="@+id/listViewAddSongs"
+            <TabHost
+                android:id="@android:id/tabhost"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@+id/buttonAddSection" >
+                android:layout_alignParentTop="true" >
 
-            </ListView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <TabWidget
+                        android:id="@android:id/tabs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/button_song_name_margin"
+                        android:paddingLeft="@dimen/button_song_name_margin"
+                        android:paddingRight="@dimen/button_song_name_margin"
+                        android:paddingTop="@dimen/button_song_name_margin"
+                        android:scrollbars="horizontal" >
+
+                    </TabWidget>
+
+                    <FrameLayout
+                        android:id="@android:id/tabcontent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <LinearLayout
+                            android:id="@+id/tab1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+
+                            <fragment
+                                android:id="@+id/fragmentTabSongList"
+                                android:name="com.matthew.ahsam.phoenix.randommusicplayer.TabSongListFragment"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                tools:layout="@layout/tab_songlist" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/tab2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+
+                            <fragment
+                                android:id="@+id/fragmentTabSettings"
+                                android:name="com.matthew.ahsam.phoenix.randommusicplayer.TabSettingsFragment"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/tab3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" >
+
+                            <fragment
+                                android:id="@+id/fragmentTabControls"
+                                android:name="com.matthew.ahsam.phoenix.randommusicplayer.TabControlsFragment"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent" />
+
+                        </LinearLayout>
+                    </FrameLayout>
+                </LinearLayout>
+            </TabHost>
 
         </RelativeLayout>
     </LinearLayout>

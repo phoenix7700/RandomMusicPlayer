@@ -5,17 +5,30 @@ import android.os.Parcelable;
 
 public class SongListChild implements Parcelable{
 	private String mName;
+	private String mArtist;
+	private String mAlbum;
 	private String mFullPath;
 	private boolean mDirectory;
 	private boolean mSelected;
 	private	int mPosition;
 	
+	//Functions
 	SongListChild () {
 		mName = "Unknown";
 		mFullPath = null;
 		mDirectory = false;
 		mSelected = false;
 		mPosition = 0;
+	}
+	
+	public SongListChild(SongListChild slc) {
+		this.mName = slc.mName;
+		this.mArtist = slc.mArtist;
+		this.mAlbum = slc.mAlbum;
+		this.mFullPath = slc.mFullPath;
+		this.mDirectory = slc.mDirectory;
+		this.mSelected = slc.mSelected;
+		this.mPosition = slc.mPosition;
 	}
 
 	public boolean isSelected() {
@@ -57,7 +70,24 @@ public class SongListChild implements Parcelable{
 	public void setPosition(int position) {
 		mPosition = position;
 	}
+	
+	public String getArtist() {
+		return mArtist;
+	}
 
+	public void setArtist(String artist) {
+		mArtist = artist;
+	}
+	
+	public String getAlbum() {
+		return mAlbum;
+	}
+
+	public void setAlbum(String album) {
+		mAlbum = album;
+	}
+
+	//Parcelable
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -88,4 +118,6 @@ public class SongListChild implements Parcelable{
 	private SongListChild (Parcel in) {
 		
 	}
+
+
 }

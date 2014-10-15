@@ -6,42 +6,38 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class SongListGroup extends SongListChild implements Parcelable {
-	
-	private enum SectionType { RANDOM(0), ORDERED(1);
-		private int value;
-		private SectionType (int v) {
-			value = v;
-		}
-		
-		public int getValue() {
-			return value;
-		}
-		
-		public void setValue(int v) {
-			value = v;
-		}
-	}
 	private SectionType mType;
 	private ArrayList<SongListChild> Songs;
 	private int mArraySize;
+	private int mMaxRandomSongs;
 
+	
+	//Functions
 	public SongListGroup () {
 		mType = SectionType.RANDOM;
 		Songs = new ArrayList<SongListChild>();
 		mArraySize = Songs.size();
+		mMaxRandomSongs = 3;
 	}
 	
-	private SongListGroup (Parcel in) {
-		int v = 0;
-		in.writeInt(v);
-		mType.setValue(v);
-		in.writeInt(mArraySize);
-		SongListChild [] songArray = new SongListGroup [mArraySize];
-		in.writeArray(songArray);
-		for (int i = 0; i < mArraySize; i++) {
-			Songs.add(songArray[i]);
+	public SongListGroup (SongListGroup slg) {
+		this.mType = slg.mType;
+		this.Songs = slg.Songs;
+		this.mArraySize = slg.mArraySize;
+		this.mMaxRandomSongs = slg.mMaxRandomSongs;
+	}
+	
+	public String getTypeAsString () {
+		switch(mType) {
+			case RANDOM:
+				return "Random";
+			case ORDERED:
+				return "Ordered";
+			default:
+				return "ERROR";
 		}
 	}
+
 	
 	public ArrayList<SongListChild> getSongs() {
 		return Songs;
@@ -65,6 +61,15 @@ public class SongListGroup extends SongListChild implements Parcelable {
 		}
 	}
 	
+	public int getMaxRandomSongs() {
+		return mMaxRandomSongs;
+	}
+
+	public void setMaxRandomSongs(int maxRandomSongs) {
+		mMaxRandomSongs = maxRandomSongs;
+	}
+	
+	
 	public boolean hasChildren() {
 		if (Songs == null) {
 			return false;
@@ -73,6 +78,7 @@ public class SongListGroup extends SongListChild implements Parcelable {
 		}
 	}
 	
+	//Parcelable 
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -98,6 +104,19 @@ public class SongListGroup extends SongListChild implements Parcelable {
 		}
 	};
 	
+	private SongListGroup (Parcel in) {
+		int v = 0;
+		in.writeInt(v);
+		mType.setValue(v);
+		in.writeInt(mArraySize);
+		SongListChild [] songArray = new SongListGroup [mArraySize];
+		in.writeArray(songArray);
+		for (int i = 0; i < mArraySize; i++) {
+			Songs.add(songArray[i]);
+		}
+	}
+
+
 
 }
 

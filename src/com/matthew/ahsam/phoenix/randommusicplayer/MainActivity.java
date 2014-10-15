@@ -6,12 +6,17 @@ import java.util.ArrayList;
 
 import android.app.AlertDialog;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
@@ -212,7 +217,7 @@ public class MainActivity extends FragmentActivity {
 		if (savedInstanceState != null) {
 			mInputList = savedInstanceState.getParcelableArrayList("InputList");
 		} else {
-			mInputList = populateInputList(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC);
+			mInputList = populateInputList(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath());
 		}
 		mInputAdapter = new InputListAdapter (MainActivity.this, mInputList);
 		mListViewAddSongs.setAdapter(mInputAdapter);
@@ -399,7 +404,7 @@ public class MainActivity extends FragmentActivity {
 		tempFolderList = sortByName(tempFolderList);
 		tempFileList = sortByName(tempFileList);
 		
-		if (!directory.equals(Environment.getExternalStorageDirectory().toString() + "/" + Environment.DIRECTORY_MUSIC)) {
+		if (!directory.equals(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath())) {
 			File[] temp = new File[tempFolderList.length + 1];
 			temp[0] = new File(upOneDirectory(directory));
 			System.arraycopy(tempFolderList, 0, temp, 1, tempFolderList.length);

@@ -34,20 +34,11 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 		}
 		
 		public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View view, ViewGroup parent) {
-			
+			SongListChild child = (SongListChild) getChild(groupPosition,childPosition);
 			if(view == null) {
 				LayoutInflater infalInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				view = infalInflater.inflate(R.layout.songlist_child, null);
 			}
-			SongListChild child = (SongListChild) getChild(groupPosition,childPosition);
-		
-			if (!child.isSelected()) {
-				view.setBackgroundColor(view.getResources().getColor(android.R.color.background_light));
-			} else {
-				view.setBackgroundColor(view.getResources().getColor(R.color.BlueTintBackground));
-			}
-			child.setPosition(childPosition);
-			view.setTag(child);
 			TextView tv = (TextView) view.findViewById(R.id.tvChild);
 			tv.setText(child.getName().toString());
 			return view;
@@ -110,18 +101,8 @@ public class SongListAdapter extends BaseExpandableListAdapter {
 						case DragEvent.ACTION_DROP:
 							SongListGroup slg = (SongListGroup) v.getTag();
 							v.setBackgroundColor(v.getResources().getColor(android.R.color.background_light));
-							MainActivity ma = (MainActivity) v.getContext();
-							if (ma.isMovingChildSongList()) {
-								SongListChild slc =  new SongListChild((SongListChild) event.getLocalState());
-								ma.getSongList().get(ma.getPreviousSelectedGroupSongList()).getSongs().remove(event.getLocalState());
-								groups.get(slg.getPosition()).getSongs().add(slc);
-								ma.setPreviousSelectedChildSongList(slg.getPosition());
-								ma.setPreviousSelectedGroupSongList(slc.getPosition());
-								ma.setMovingChildSongList(false);
-							} else {
-								SongListChild slc = new SongListChild((SongListChild) event.getLocalState());
-								groups.get(slg.getPosition()).getSongs().add(slc);
-							}
+							SongListChild slc = (SongListChild) event.getLocalState();
+							groups.get(slg.getPosition()).getSongs().add(slc);
 							notifyDataSetChanged();
 							break;
 						case DragEvent.ACTION_DRAG_ENDED:

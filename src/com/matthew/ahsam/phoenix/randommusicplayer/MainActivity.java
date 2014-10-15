@@ -4,14 +4,17 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
-import android.app.AlertDialog;
 import android.content.ClipData;
+<<<<<<< HEAD
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+=======
+import android.content.res.Configuration;
+>>>>>>> parent of 0b2e6fb... Big Update 6/26/2014
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -22,121 +25,38 @@ import android.view.View;
 import android.view.View.DragShadowBuilder;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ListView;
-import android.widget.TabHost;
-import android.widget.TabHost.TabSpec;
-import android.widget.TabWidget;
-import android.widget.TextView;
 
 public class MainActivity extends FragmentActivity {
 	
 	//Resources
 	private Button mButtonAddSection;
-	private Button mButtonRemoveSelected;
-	private Button mButtonMoveSongUp;
-	private Button mButtonMoveSongDown;
 	private ExpandableListView mExpandableListViewSongList;
 	private ListView mListViewAddSongs;
-	private TabHost mTabHost;
-	@SuppressWarnings("unused")
-	private TabWidget mTabWidget;
-	private TextView mTextViewSongName;
-	private TextView mTextViewSongArtist;
-	private TextView mTextViewSongAlbum;
-	private TextView mTextViewSectionType;
-	private Button mButtonSectionType;
 	
-
+	
 	//Variables
 	private File[] fileList;
 	private SongListAdapter mSongAdapter;
 	private InputListAdapter mInputAdapter;
 	private ArrayList<SongListGroup> mSongList;
 	private ArrayList<SongListChild> mInputList;
-	private Integer	mPreviousSelectedInputList;
-	private Integer mPreviousSelectedChildSongList;	
-	private Integer mPreviousSelectedGroupSongList;
-	private boolean mLastSongSelectedGroup;
-	private boolean mMovingChildSongList;
-	
+	private Integer	mPreviousSelected;
 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
 		if (savedInstanceState != null) {
-			mPreviousSelectedInputList = savedInstanceState.getInt("PreviousSelectedInput");
-			mPreviousSelectedChildSongList = savedInstanceState.getInt("PreviousSelectedChild");
-			mPreviousSelectedGroupSongList = savedInstanceState.getInt("PreviousSelectedGroup");
+			mPreviousSelected = savedInstanceState.getInt("PreviousSelected");
 		} else {
-			mPreviousSelectedInputList = -1;
-			mPreviousSelectedChildSongList = -1;
-			mPreviousSelectedGroupSongList = -1;
+			mPreviousSelected = -1;
 		}
 		
-		//Tab Settings
-		mTextViewSongName = (TextView) findViewById(R.id.textViewSongName);
-		mTextViewSongArtist = (TextView) findViewById(R.id.textViewArtist);
-		mTextViewSongAlbum = (TextView) findViewById(R.id.textViewAlbum);
-		mTextViewSectionType = (TextView) findViewById(R.id.textViewSectionType);
-		mButtonSectionType = (Button) findViewById(R.id.buttonSectionType);
-		mButtonSectionType.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-				builder.setTitle(R.string.dialog_type_picker_title);
-				builder.setItems(R.array.SectionTypes,new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						SongListGroup slg = mSongList.get(mPreviousSelectedGroupSongList);
-						slg.setType(which);
-						mButtonSectionType.setText(slg.getTypeAsString());
-						slg.setName(slg.getTypeAsString());
-						mExpandableListViewSongList.invalidateViews();
-					}
-				});
-				builder.show();							
-			}
-		});
-		mTextViewSongName.setVisibility(View.VISIBLE);
-		mTextViewSongArtist.setVisibility(View.VISIBLE);
-		mTextViewSongAlbum.setVisibility(View.VISIBLE);
-		mTextViewSectionType.setVisibility(View.INVISIBLE);
-		mButtonSectionType.setVisibility(View.INVISIBLE);
-		
-		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
-		mTabHost.setup();
-		
-		mTabWidget = mTabHost.getTabWidget();
-		TabSpec tabSpec = mTabHost.newTabSpec("Tab1"); 
-		tabSpec.setIndicator("",getResources().getDrawable(R.drawable.tabmusic));
-		tabSpec.setContent(R.id.fragmentTabSongList);
-		mTabHost.addTab(tabSpec);
-		tabSpec = mTabHost.newTabSpec("Tab2");
-		tabSpec.setIndicator("",getResources().getDrawable(R.drawable.tabsettings));
-		tabSpec.setContent(R.id.fragmentTabSettings);
-		mTabHost.addTab(tabSpec);
-		tabSpec = mTabHost.newTabSpec("Tab3");
-		tabSpec.setIndicator("",getResources().getDrawable(R.drawable.tabcontrol));
-		tabSpec.setContent(R.id.fragmentTabControls);
-		mTabHost.addTab(tabSpec);
-		mTabHost.getTabWidget().getChildAt(1).setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				mTabHost.setCurrentTab(1);
-			}
-		});
-		
-		//ExpandableList/SongList
 		mExpandableListViewSongList = (ExpandableListView) findViewById(R.id.expandableListViewSongList);
 		if (savedInstanceState != null) {
 			mSongList = savedInstanceState.getParcelableArrayList("SongList");
@@ -145,74 +65,7 @@ public class MainActivity extends FragmentActivity {
 		}
 		mSongAdapter = new SongListAdapter (MainActivity.this, mSongList);
 		mExpandableListViewSongList.setAdapter(mSongAdapter);
-		mExpandableListViewSongList.setOnChildClickListener(new OnChildClickListener() {
 			
-			@Override
-			public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
-				SongListChild slc = mSongList.get(groupPosition).getSongs().get(childPosition);
-				if (slc.isSelected()) {
-					slc.setSelected(false);
-					view.setBackgroundColor(view.getResources().getColor(android.R.color.background_light));
-				} else {
-					slc.setSelected(true);
-					view.setBackgroundColor(view.getResources().getColor(R.color.BlueTintBackground));
-				}
-				mLastSongSelectedGroup = false;
-				mPreviousSelectedChildSongList = childPosition;
-				mPreviousSelectedGroupSongList = groupPosition;
-				SongListChild prevslc = mSongList.get(mPreviousSelectedGroupSongList).getSongs().get(mPreviousSelectedChildSongList);
-				mTextViewSongName.setText(prevslc.getName());
-				mTextViewSongArtist.setText(prevslc.getArtist());
-				mTextViewSongAlbum.setText(prevslc.getAlbum());
-				mTextViewSongName.setVisibility(View.VISIBLE);
-				mTextViewSongArtist.setVisibility(View.VISIBLE);
-				mTextViewSongAlbum.setVisibility(View.VISIBLE);
-				mTextViewSectionType.setVisibility(View.INVISIBLE);
-				mButtonSectionType.setVisibility(View.INVISIBLE);
-				return false;
-			}
-		
-		});
-		mExpandableListViewSongList.setOnGroupClickListener(new OnGroupClickListener() {
-
-			@Override
-			public boolean onGroupClick(ExpandableListView parent, View view, int groupPosition, long id) {
-				mLastSongSelectedGroup = true;
-				SongListGroup slg = mSongList.get(groupPosition);
-				mPreviousSelectedGroupSongList = groupPosition;
-				mButtonSectionType.setText(slg.getTypeAsString());
-				mTextViewSongName.setVisibility(View.INVISIBLE);
-				mTextViewSongArtist.setVisibility(View.INVISIBLE);
-				mTextViewSongAlbum.setVisibility(View.INVISIBLE);
-				mTextViewSectionType.setVisibility(View.VISIBLE);
-				mButtonSectionType.setVisibility(View.VISIBLE);
-				return false;
-			}
-			
-		});
-		mExpandableListViewSongList.setOnItemLongClickListener(new OnItemLongClickListener () {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-				if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-		            int groupPosition = ExpandableListView.getPackedPositionGroup(id);
-		            int childPosition = ExpandableListView.getPackedPositionChild(id);
-		            
-		            ClipData data = ClipData.newPlainText("", "");
-					DragShadowBuilder shadow = new View.DragShadowBuilder(view);
-					setMovingChildSongList(true);
-					setPreviousSelectedChildSongList(childPosition);
-					setPreviousSelectedGroupSongList(groupPosition);
-					view.startDrag(data, shadow, mSongList.get(groupPosition).getSongs().get(childPosition), 0);
-		            return true;
-				} else {
-					return false;
-				}
-			}
-			
-		});
-		
-		//ListView/InputList
 		mListViewAddSongs = (ListView) findViewById(R.id.listViewAddSongs);
 		if (savedInstanceState != null) {
 			mInputList = savedInstanceState.getParcelableArrayList("InputList");
@@ -230,17 +83,17 @@ public class MainActivity extends FragmentActivity {
 					mInputList.clear();
 					mInputList.addAll(populateInputList(slc.getFullPath()));
 					mInputAdapter.notifyDataSetChanged();
-					mPreviousSelectedInputList = -1;
+					mPreviousSelected = -1;
 				} else {
-					if (mPreviousSelectedInputList >= 0) {
-						mInputList.get(mPreviousSelectedInputList).setSelected(false);
+					if (mPreviousSelected >= 0) {
+						mInputList.get(mPreviousSelected).setSelected(false);
 						ViewGroup vg = (ViewGroup) view.getParent();
-						View mPreviousView = vg.getChildAt(Math.abs(((SongListChild)vg.getChildAt(0).getTag()).getPosition() - mPreviousSelectedInputList));
+						View mPreviousView = vg.getChildAt(Math.abs(((SongListChild)vg.getChildAt(0).getTag()).getPosition() - mPreviousSelected));
 						mPreviousView.setBackgroundColor(view.getResources().getColor(android.R.color.background_light));
 						mPreviousView.invalidate();
 					}
 					mInputList.get(position).setSelected(true);
-					mPreviousSelectedInputList = position;
+					mPreviousSelected = position;
 					view.setBackgroundColor(view.getResources().getColor(R.color.BlueTintBackground));
 					view.invalidate();
 				}
@@ -266,7 +119,7 @@ public class MainActivity extends FragmentActivity {
 		});
 		
 		
-		//Tab Controls
+		
 		mButtonAddSection = (Button) findViewById(R.id.buttonAddSection);
 		mButtonAddSection.setOnClickListener(new View.OnClickListener() {
 			
@@ -274,92 +127,19 @@ public class MainActivity extends FragmentActivity {
 			public void onClick(View v) {
 				SongListGroup g = new SongListGroup();
 				ArrayList<SongListChild> arrayslc = new ArrayList<SongListChild>();
-				String [] strarray = getResources().getStringArray(R.array.SectionTypes);
-				g.setName(strarray[0]);
+				g.setName("Ordered");
 				g.setPosition(mSongList.size());
-				g.setSongs(arrayslc);
-				g.setType(0);
 				mSongList.add(g);
+				mSongList.get(mSongList.size()-1).setSongs(arrayslc);
 				mSongAdapter.notifyDataSetChanged();
 			}
 		});
-		
-		mButtonRemoveSelected = (Button) findViewById(R.id.buttonRemoveSong);
-		mButtonRemoveSelected.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				
-				for (int i = 0; i < mSongList.size(); i++) {
-					ArrayList<SongListChild> slcArray = mSongList.get(i).getSongs();
-					for (int j = 0; j < slcArray.size(); j++ ) {
-						if (slcArray.get(j).isSelected()){
-							slcArray.remove(j);
-							j--;
-						} else {}
-					}
-				}
-				mSongAdapter.notifyDataSetChanged();
-				mExpandableListViewSongList.invalidateViews();
-			}
-		});
-
-		mButtonMoveSongDown = (Button) findViewById(R.id.buttonMoveSongDown);
-		mButtonMoveSongDown.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				MainActivity ma = (MainActivity) v.getContext();
-				int child = ma.getPreviousSelectedChildSongList();
-				int group = ma.getPreviousSelectedGroupSongList();
-				int groupmax = ma.getSongList().size()-1;
-				int childmax = ma.getSongList().get(group).getSongs().size()-2;
- 				if ((child <= childmax && child >= 0) && (group >= 0 && group <= groupmax)) {
- 					SongListChild slc = ma.getSongList().get(group).getSongs().get(child);
-					SongListChild slc2 = ma.getSongList().get(group).getSongs().get(child+1);
-					getSongList().get(group).getSongs().set(child, slc2);
-					getSongList().get(group).getSongs().set(child+1, slc);
-					ma.getSongAdapter().notifyDataSetChanged();
-					ma.setPreviousSelectedChildSongList(child+1);
-					mExpandableListViewSongList.invalidateViews();
-				}
-				
-			}
-		});
-		
-		mButtonMoveSongUp = (Button) findViewById(R.id.buttonMoveSongUp);
-		mButtonMoveSongUp.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				MainActivity ma = (MainActivity) v.getContext();
-				int child = ma.getPreviousSelectedChildSongList();
-				int group = ma.getPreviousSelectedGroupSongList();
-				int groupmax = ma.getSongList().size()-1;
-				int childmax = ma.getSongList().get(group).getSongs().size()-1;
- 				if ((child <= childmax && child >= 1) && (group >= 0 && group <= groupmax)) {
- 					SongListChild slc = ma.getSongList().get(group).getSongs().get(child);
-					SongListChild slc2 = ma.getSongList().get(group).getSongs().get(child-1);
-					getSongList().get(group).getSongs().set(child, slc2);
-					getSongList().get(group).getSongs().set(child-1, slc);
-					ma.getSongAdapter().notifyDataSetChanged();
-					ma.setPreviousSelectedChildSongList(child-1);
-					mExpandableListViewSongList.invalidateViews();
-				}
-				
-			}
-		});
-		
-
 	}
 	
-	//Overrides of android state functions
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		if (savedInstanceState != null){
-		savedInstanceState.putInt("PreviousSelectedInput", mPreviousSelectedInputList);
-		savedInstanceState.putInt("PreviousSelectedChild", mPreviousSelectedChildSongList);
-		savedInstanceState.putInt("PreviousSelectedGroup", mPreviousSelectedGroupSongList);
+		savedInstanceState.putInt("PreviousSelected", mPreviousSelected);
 		savedInstanceState.putParcelableArrayList("SongList", mSongList);
 		savedInstanceState.putParcelableArrayList("InputList", mInputList);
 		} else {
@@ -385,21 +165,11 @@ public class MainActivity extends FragmentActivity {
 	protected void onStart() {
 		super.onStart();
 	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
 
-
-	//Private Functions	
 	private ArrayList<SongListChild> populateInputList (String directory) {
 		ArrayList<SongListChild> list = new ArrayList<SongListChild>();
 		File[] tempFolderList = loadFileList(directory, true);
 		File[] tempFileList = loadFileList(directory, false);
-		MediaMetadataRetriever metaRetriever = new MediaMetadataRetriever();
 		
 		tempFolderList = sortByName(tempFolderList);
 		tempFileList = sortByName(tempFileList);
@@ -430,19 +200,7 @@ public class MainActivity extends FragmentActivity {
 		for(int i = 0 ; i < tempFileList.length; i++){
 	        fileList[i + folderlen] = tempFileList[i];   
 	        SongListChild slc = new SongListChild();
-        	metaRetriever.setDataSource(tempFileList[i].getAbsolutePath());
-        	try {
-        		slc.setName(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE));
-                slc.setArtist(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST));
-                slc.setAlbum(metaRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM));
-        	} catch (Exception e) {
-    	        slc.setName(tempFileList[i].getName());
-        		slc.setArtist("Unknown Artist");
-        		slc.setAlbum("Unknown Album");
-        	}
-        	if (slc.getName() == null) {
-        		slc.setName(tempFileList[i].getName());
-        	}
+	        slc.setName(tempFileList[i].getName());
 	        slc.setFullPath(tempFileList[i].getAbsolutePath());
 	        slc.setDirectory(false);
 	        list.add(slc);
@@ -455,6 +213,33 @@ public class MainActivity extends FragmentActivity {
 		FileSort fSort = new FileSort (files);
 		return fSort.Sort();
 	}
+	
+	public ArrayList<SongListGroup> SetStandardGroups() {
+		 
+		ArrayList<SongListGroup> list = new ArrayList<SongListGroup>();
+	    ArrayList<SongListChild> list2 = new ArrayList<SongListChild>();
+	 
+	    SongListGroup gru1 = new SongListGroup();
+	    gru1.setName("Random");
+	    gru1.setPosition(0);	 
+		gru1.setSongs(list2);	 
+		
+	    list.add(gru1);
+		 
+	         return list;
+	 }
+
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	
+	
+	
 	
 	private File[] loadFileList(String directory, boolean onlyDirectories) {
 	    File path = new File(directory);
@@ -487,23 +272,62 @@ public class MainActivity extends FragmentActivity {
 	    }
 	}
 	
-	
-	private ArrayList<SongListGroup> SetStandardGroups() {
-		 
-		ArrayList<SongListGroup> list = new ArrayList<SongListGroup>();
-	    ArrayList<SongListChild> list2 = new ArrayList<SongListChild>();
-	 
-	    SongListGroup gru1 = new SongListGroup();
-	    gru1.setName("Random");
-	    gru1.setPosition(0);	 
-		gru1.setSongs(list2);	 
-		
-	    list.add(gru1);
-		 
-	         return list;
-	 }
-	
-	//Getters and Setters
+
+/*	public void showFileListDialog(final String directory, final Context context){
+	    Dialog dialog = null;
+	    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+	    File[] tempFileList = loadFileList(directory);
+
+	    //if directory is root, no need to up one directory
+	    if(directory.equals("/")){
+	        fileList = new File[tempFileList.length];
+	        filenameList = new String[tempFileList.length];
+
+	        //iterate over tempFileList
+	        for(int i = 0; i < tempFileList.length; i++){
+	            fileList[i] = tempFileList[i];
+	            filenameList[i] = tempFileList[i].getName();
+	        }
+	    } else {
+	        fileList = new File[tempFileList.length+1];
+	        filenameList = new String[tempFileList.length+1];
+
+	        //add an "up" option as first item
+	        fileList[0] = new File(upOneDirectory(directory));
+	        filenameList[0] = "..";
+
+	        //iterate over tempFileList
+	        for(int i = 0; i < tempFileList.length; i++){
+	            fileList[i+1] = tempFileList[i];
+	            filenameList[i+1] = tempFileList[i].getName();
+	        }
+	    }
+
+	    builder.setTitle("Choose your file: " );
+
+	    builder.setItems(filenameList, new DialogInterface.OnClickListener() {
+	        public void onClick(DialogInterface dialog, int which) {
+	            File chosenFile = fileList[which];
+	            mEditTextSongName.setText(chosenFile.getAbsolutePath());
+	            
+	            if(chosenFile.isDirectory())
+	                showFileListDialog(chosenFile.getAbsolutePath(), context);
+	        }
+	    });
+
+	    builder.setNegativeButton("Cancel", new OnClickListener() {
+
+	        @Override
+	        public void onClick(DialogInterface dialog, int which) {
+	        	mEditTextSongName.setText("");
+	            dialog.dismiss();
+	        }
+	    });
+	        dialog = builder.create();
+	    dialog.show();
+	}*/
+
 	public String upOneDirectory(String directory){
 	String[] dirs = directory.split("/");
 	    StringBuilder stringBuilder = new StringBuilder("");
@@ -526,44 +350,6 @@ public class MainActivity extends FragmentActivity {
 	
 	public SongListAdapter getSongAdapter() {
 		return mSongAdapter;
-	}
-
-	public boolean isLastSongSelectedGroup() {
-		return mLastSongSelectedGroup;
-	}
-
-	public boolean isMovingChildSongList() {
-		return mMovingChildSongList;
-	}
-
-	public void setMovingChildSongList(boolean movingChildSongList) {
-		mMovingChildSongList = movingChildSongList;
-	}
-	
-	public Integer getPreviousSelectedChildSongList() {
-		return mPreviousSelectedChildSongList;
-	}
-
-	public void setPreviousSelectedChildSongList(
-			Integer previousSelectedChildSongList) {
-		mPreviousSelectedChildSongList = previousSelectedChildSongList;
-	}
-
-	public Integer getPreviousSelectedGroupSongList() {
-		return mPreviousSelectedGroupSongList;
-	}
-
-	public void setPreviousSelectedGroupSongList(
-			Integer previousSelectedGroupSongList) {
-		mPreviousSelectedGroupSongList = previousSelectedGroupSongList;
-	}
-	
-	public ArrayList<SongListGroup> getSongList() {
-		return mSongList;
-	}
-
-	public void setSongList(ArrayList<SongListGroup> songList) {
-		mSongList = songList;
 	}
 
 

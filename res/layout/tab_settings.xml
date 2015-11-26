@@ -49,4 +49,22 @@
         android:paddingTop="@dimen/button_song_name_margin"
         android:text="@string/text_unknown" />
 
+    <Button
+        android:id="@+id/buttonNumberRandomSongs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/buttonSectionType"
+        android:layout_below="@+id/buttonSectionType"
+        android:text="@string/button_number_random_songs" />
+
+    <TextView
+        android:id="@+id/textNumberRandomSongs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/buttonNumberRandomSongs"
+        android:layout_alignBottom="@+id/buttonNumberRandomSongs"
+        android:layout_alignParentLeft="true"
+        android:text="@string/text_number_of_random_song"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
 </RelativeLayout>

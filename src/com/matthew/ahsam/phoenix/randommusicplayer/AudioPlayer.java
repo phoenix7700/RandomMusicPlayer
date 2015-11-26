@@ -228,7 +228,15 @@ public class AudioPlayer extends Fragment{
 		stopSong();
 		mPlayer = new MediaPlayer();
 		MainActivity ma = ((MainActivity)getActivity());
-		switch (ma.getSongList().get(section).getType()){
+		//Get Next Section
+			Integer nextSection;
+		if (slgArray.size()-1 == section){
+			nextSection = 0;
+		} else {
+			nextSection = section + 1;
+		}
+		//Fetch song
+		switch (ma.getSongList().get(nextSection).getType()){
 			case RANDOM:	
 				getNextSongRandom(slgArray, section, song);
 				break;

@@ -22,5 +22,9 @@
     </string-array>
     <string name="button_move_up_song">Up</string>
     <string name="button_move_down_song">Down</string>
+    <string name="text_number_of_random_song"># to play</string>
+    <string name="button_number_random_songs">#</string>
+    <string name="dialog_choose_number">Play how many random songs?</string>
+    <string name="button_number_picker_ok">Ok</string>
 
 </resources>

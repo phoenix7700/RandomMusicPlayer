@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
@@ -24,6 +26,7 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
@@ -45,7 +48,9 @@ public class MainActivity extends FragmentActivity {
 	private TextView mTextViewSongArtist;
 	private TextView mTextViewSongAlbum;
 	private TextView mTextViewSectionType;
+	private TextView mTextViewNumberToPlay;
 	private Button mButtonSectionType;
+	private Button mButtonNumberRandomSongs;
 	
 
 	//Variables
@@ -76,61 +81,6 @@ public class MainActivity extends FragmentActivity {
 			mPreviousSelectedGroupSongList = -1;
 		}
 		
-		//Tab Settings
-		mTextViewSongName = (TextView) findViewById(R.id.textViewSongName);
-		mTextViewSongArtist = (TextView) findViewById(R.id.textViewArtist);
-		mTextViewSongAlbum = (TextView) findViewById(R.id.textViewAlbum);
-		mTextViewSectionType = (TextView) findViewById(R.id.textViewSectionType);
-		mButtonSectionType = (Button) findViewById(R.id.buttonSectionType);
-		mButtonSectionType.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-				builder.setTitle(R.string.dialog_type_picker_title);
-				builder.setItems(R.array.SectionTypes,new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						SongListGroup slg = mSongList.get(mPreviousSelectedGroupSongList);
-						slg.setType(which);
-						mButtonSectionType.setText(slg.getTypeAsString());
-						slg.setName(slg.getTypeAsString());
-						mExpandableListViewSongList.invalidateViews();
-					}
-				});
-				builder.show();							
-			}
-		});
-		mTextViewSongName.setVisibility(View.VISIBLE);
-		mTextViewSongArtist.setVisibility(View.VISIBLE);
-		mTextViewSongAlbum.setVisibility(View.VISIBLE);
-		mTextViewSectionType.setVisibility(View.INVISIBLE);
-		mButtonSectionType.setVisibility(View.INVISIBLE);
-		
-		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
-		mTabHost.setup();
-		
-		mTabWidget = mTabHost.getTabWidget();
-		TabSpec tabSpec = mTabHost.newTabSpec("Tab1"); 
-		tabSpec.setIndicator("",getResources().getDrawable(R.drawable.tabmusic));
-		tabSpec.setContent(R.id.fragmentTabSongList);
-		mTabHost.addTab(tabSpec);
-		tabSpec = mTabHost.newTabSpec("Tab2");
-		tabSpec.setIndicator("",getResources().getDrawable(R.drawable.tabsettings));
-		tabSpec.setContent(R.id.fragmentTabSettings);
-		mTabHost.addTab(tabSpec);
-		tabSpec = mTabHost.newTabSpec("Tab3");
-		tabSpec.setIndicator("",getResources().getDrawable(R.drawable.tabcontrol));
-		tabSpec.setContent(R.id.fragmentTabControls);
-		mTabHost.addTab(tabSpec);
-		mTabHost.getTabWidget().getChildAt(1).setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				mTabHost.setCurrentTab(1);
-			}
-		});
 		
 		//ExpandableList/SongList
 		mExpandableListViewSongList = (ExpandableListView) findViewById(R.id.expandableListViewSongList);
@@ -165,6 +115,8 @@ public class MainActivity extends FragmentActivity {
 				mTextViewSongAlbum.setVisibility(View.VISIBLE);
 				mTextViewSectionType.setVisibility(View.INVISIBLE);
 				mButtonSectionType.setVisibility(View.INVISIBLE);
+				mTextViewNumberToPlay.setVisibility(View.INVISIBLE);
+				mButtonNumberRandomSongs.setVisibility(View.INVISIBLE);
 				return false;
 			}
 		
@@ -182,6 +134,11 @@ public class MainActivity extends FragmentActivity {
 				mTextViewSongAlbum.setVisibility(View.INVISIBLE);
 				mTextViewSectionType.setVisibility(View.VISIBLE);
 				mButtonSectionType.setVisibility(View.VISIBLE);
+				mButtonNumberRandomSongs.setText(Integer.toString(mSongList.get(mPreviousSelectedGroupSongList).getMaxRandomSongs()));
+				if (mButtonSectionType.getText() == "Random"){
+					mTextViewNumberToPlay.setVisibility(View.VISIBLE);
+					mButtonNumberRandomSongs.setVisibility(View.VISIBLE);
+				}
 				return false;
 			}
 			
@@ -349,6 +306,100 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 		
+		//Tab Settings
+		mTextViewSongName = (TextView) findViewById(R.id.textViewSongName);
+		mTextViewSongArtist = (TextView) findViewById(R.id.textViewArtist);
+		mTextViewSongAlbum = (TextView) findViewById(R.id.textViewAlbum);
+		mTextViewSectionType = (TextView) findViewById(R.id.textViewSectionType);
+		mTextViewNumberToPlay = (TextView) findViewById(R.id.textNumberRandomSongs);
+		
+		mButtonNumberRandomSongs = (Button) findViewById(R.id.buttonNumberRandomSongs);
+		mButtonNumberRandomSongs.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				final View numPickerView = v.inflate(v.getContext(), R.layout.number_picker_dialog, null);
+				AlertDialog.Builder numPickerDialogBuilder = new AlertDialog.Builder(v.getContext())
+					.setTitle("Number of Songs")
+					.setView(numPickerView)
+					.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+						
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							
+						}
+					});
+				AlertDialog numPickerDialog = numPickerDialogBuilder.create();
+				numPickerDialog.show();
+				//Setup Number of random songs to play for each group.
+				//Code for this is in NumberPickerFragment
+				//Need to write code for OK button and figure out how to get info from fragment back to here.
+			}
+		});
+		
+		mButtonSectionType = (Button) findViewById(R.id.buttonSectionType);
+		mButtonSectionType.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+				builder.setTitle(R.string.dialog_type_picker_title);
+				builder.setItems(R.array.SectionTypes,new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						SongListGroup slg = mSongList.get(mPreviousSelectedGroupSongList);
+						slg.setType(which);
+						mButtonSectionType.setText(slg.getTypeAsString());
+						slg.setName(slg.getTypeAsString());
+						if (slg.getType() == SectionType.RANDOM) {
+							mTextViewNumberToPlay.setVisibility(View.VISIBLE);
+							mButtonNumberRandomSongs.setVisibility(View.VISIBLE);	
+						} else {
+							mTextViewNumberToPlay.setVisibility(View.INVISIBLE);
+							mButtonNumberRandomSongs.setVisibility(View.INVISIBLE);	
+						}
+						mExpandableListViewSongList.invalidateViews();
+					}
+				});
+				builder.show();							
+			}
+		});
+		mTextViewSongName.setVisibility(View.VISIBLE);
+		mTextViewSongArtist.setVisibility(View.VISIBLE);
+		mTextViewSongAlbum.setVisibility(View.VISIBLE);
+		mTextViewSectionType.setVisibility(View.INVISIBLE);
+		mButtonSectionType.setVisibility(View.INVISIBLE);
+		mTextViewNumberToPlay.setVisibility(View.INVISIBLE);
+		mButtonNumberRandomSongs.setVisibility(View.INVISIBLE);		
+		
+		mTabHost = (TabHost) findViewById(android.R.id.tabhost);
+		mTabHost.setup();
+		
+		mTabWidget = mTabHost.getTabWidget();
+		TabSpec tabSpec = mTabHost.newTabSpec("Tab1"); 
+		tabSpec.setIndicator("",getResources().getDrawable(R.drawable.tabmusic));
+		tabSpec.setContent(R.id.fragmentTabSongList);
+		mTabHost.addTab(tabSpec);
+		tabSpec = mTabHost.newTabSpec("Tab2");
+		tabSpec.setIndicator("",getResources().getDrawable(R.drawable.tabsettings));
+		tabSpec.setContent(R.id.fragmentTabSettings);
+		mTabHost.addTab(tabSpec);
+		tabSpec = mTabHost.newTabSpec("Tab3");
+		tabSpec.setIndicator("",getResources().getDrawable(R.drawable.tabcontrol));
+		tabSpec.setContent(R.id.fragmentTabControls);
+		mTabHost.addTab(tabSpec);
+		mTabHost.getTabWidget().getChildAt(1).setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mTabHost.setCurrentTab(1);
+			}
+		});
+		
+
+	
 
 	}
 	

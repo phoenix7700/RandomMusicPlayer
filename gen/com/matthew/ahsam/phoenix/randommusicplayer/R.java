@@ -34,15 +34,17 @@ public final class R {
         public static final int tabsettings=0x7f020003;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a001b;
-        public static final int buttonAddSection=0x7f0a0011;
-        public static final int buttonMoveSongDown=0x7f0a0013;
-        public static final int buttonMoveSongUp=0x7f0a0014;
+        public static final int action_settings=0x7f0a001f;
+        public static final int buttonAddSection=0x7f0a0013;
+        public static final int buttonMoveSongDown=0x7f0a0015;
+        public static final int buttonMoveSongUp=0x7f0a0016;
         public static final int buttonNextSong=0x7f0a000d;
+        public static final int buttonNumberPickerOk=0x7f0a0010;
+        public static final int buttonNumberRandomSongs=0x7f0a001c;
         public static final int buttonPlayPause=0x7f0a000c;
         public static final int buttonPreviousSong=0x7f0a000a;
-        public static final int buttonRemoveSong=0x7f0a0012;
-        public static final int buttonSectionType=0x7f0a0018;
+        public static final int buttonRemoveSong=0x7f0a0014;
+        public static final int buttonSectionType=0x7f0a001a;
         public static final int buttonStop=0x7f0a000b;
         public static final int expandableListViewSongList=0x7f0a0002;
         public static final int fragmentAudioPlayer=0x7f0a0001;
@@ -51,26 +53,29 @@ public final class R {
         public static final int fragmentTabSongList=0x7f0a0004;
         public static final int linearLayout1=0x7f0a0009;
         public static final int linearLayout2=0x7f0a0000;
-        public static final int listViewAddSongs=0x7f0a001a;
+        public static final int listViewAddSongs=0x7f0a001e;
+        public static final int numberOfRandomSongsPicker=0x7f0a000f;
         public static final int seekBar1=0x7f0a000e;
         public static final int tab1=0x7f0a0003;
         public static final int tab2=0x7f0a0005;
         public static final int tab3=0x7f0a0007;
-        public static final int textViewAlbum=0x7f0a0019;
-        public static final int textViewArtist=0x7f0a0016;
-        public static final int textViewSectionType=0x7f0a0017;
-        public static final int textViewSongName=0x7f0a0015;
-        public static final int tvChild=0x7f0a000f;
-        public static final int tvGroup=0x7f0a0010;
+        public static final int textNumberRandomSongs=0x7f0a001d;
+        public static final int textViewAlbum=0x7f0a001b;
+        public static final int textViewArtist=0x7f0a0018;
+        public static final int textViewSectionType=0x7f0a0019;
+        public static final int textViewSongName=0x7f0a0017;
+        public static final int tvChild=0x7f0a0011;
+        public static final int tvGroup=0x7f0a0012;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int music_player=0x7f030001;
-        public static final int songlist_child=0x7f030002;
-        public static final int songlist_group=0x7f030003;
-        public static final int tab_controls=0x7f030004;
-        public static final int tab_settings=0x7f030005;
-        public static final int tab_songlist=0x7f030006;
+        public static final int number_picker_dialog=0x7f030002;
+        public static final int songlist_child=0x7f030003;
+        public static final int songlist_group=0x7f030004;
+        public static final int tab_controls=0x7f030005;
+        public static final int tab_settings=0x7f030006;
+        public static final int tab_songlist=0x7f030007;
     }
     public static final class menu {
         public static final int main=0x7f090000;
@@ -83,14 +88,18 @@ public final class R {
         public static final int button_fastforward=0x7f060005;
         public static final int button_move_down_song=0x7f060010;
         public static final int button_move_up_song=0x7f06000f;
+        public static final int button_number_picker_ok=0x7f060014;
+        public static final int button_number_random_songs=0x7f060012;
         public static final int button_pause=0x7f060009;
         public static final int button_play=0x7f060002;
         public static final int button_remove=0x7f06000a;
         public static final int button_rewind=0x7f060004;
         public static final int button_select_song=0x7f060006;
+        public static final int dialog_choose_number=0x7f060013;
         public static final int dialog_type_picker_title=0x7f06000e;
         public static final int edittext_hint=0x7f060007;
         public static final int text_by=0x7f06000b;
+        public static final int text_number_of_random_song=0x7f060011;
         public static final int text_section_type=0x7f06000d;
         public static final int text_unknown=0x7f06000c;
     }

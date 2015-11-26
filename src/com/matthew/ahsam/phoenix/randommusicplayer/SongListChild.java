@@ -119,5 +119,4 @@ public class SongListChild implements Parcelable{
 		
 	}
 
-
 }
